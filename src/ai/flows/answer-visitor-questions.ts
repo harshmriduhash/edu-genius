@@ -1,5 +1,4 @@
-
-'use server';
+"use server";
 /**
  * @fileOverview An AI agent that answers visitor questions about the EduGenius app.
  *
@@ -8,21 +7,27 @@
  * - AnswerVisitorQuestionOutput - The return type for the function.
  */
 
-import { ai } from '@/ai/genkit';
-import { z } from 'genkit';
+import { ai } from "@/ai/genkit";
+import { z } from "genkit";
 
 const AnswerVisitorQuestionInputSchema = z.object({
   question: z.string().describe("The visitor's question about the app."),
   // No API key here, as this is a public-facing flow and will use the system's key.
 });
-export type AnswerVisitorQuestionInput = z.infer<typeof AnswerVisitorQuestionInputSchema>;
+export type AnswerVisitorQuestionInput = z.infer<
+  typeof AnswerVisitorQuestionInputSchema
+>;
 
 const AnswerVisitorQuestionOutputSchema = z.object({
   answer: z.string().describe("The AI's answer to the visitor's question."),
 });
-export type AnswerVisitorQuestionOutput = z.infer<typeof AnswerVisitorQuestionOutputSchema>;
+export type AnswerVisitorQuestionOutput = z.infer<
+  typeof AnswerVisitorQuestionOutputSchema
+>;
 
-export async function answerVisitorQuestion(input: AnswerVisitorQuestionInput): Promise<AnswerVisitorQuestionOutput> {
+export async function answerVisitorQuestion(
+  input: AnswerVisitorQuestionInput
+): Promise<AnswerVisitorQuestionOutput> {
   return answerVisitorQuestionFlow(input);
 }
 
@@ -44,7 +49,7 @@ Core Features:
 `;
 
 const prompt = ai.definePrompt({
-  name: 'answerVisitorQuestionPrompt',
+  name: "answerVisitorQuestionPrompt",
   input: { schema: AnswerVisitorQuestionInputSchema },
   output: { schema: AnswerVisitorQuestionOutputSchema },
   prompt: `You are a friendly and helpful chatbot for a web app called "EduGenius". Your only purpose is to answer questions about what EduGenius is and what it can do.
@@ -65,7 +70,7 @@ Answer the question based *only* on the provided context.`,
 
 const answerVisitorQuestionFlow = ai.defineFlow(
   {
-    name: 'answerVisitorQuestionFlow',
+    name: "answerVisitorQuestionFlow",
     inputSchema: AnswerVisitorQuestionInputSchema,
     outputSchema: AnswerVisitorQuestionOutputSchema,
   },

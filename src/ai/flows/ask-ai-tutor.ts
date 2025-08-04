@@ -1,5 +1,4 @@
-
-'use server';
+"use server";
 /**
  * @fileOverview An AI tutor that can answer student questions.
  *
@@ -8,11 +7,11 @@
  * - AskAiTutorOutput - The return type for the askAiTutor function.
  */
 
-import { ai } from '@/ai/genkit';
-import { z } from 'genkit';
+import { ai } from "@/ai/genkit";
+import { z } from "genkit";
 
 const AskAiTutorInputSchema = z.object({
-  topic: z.string().describe('The topic of the question.'),
+  topic: z.string().describe("The topic of the question."),
   question: z.string().describe("The student's question."),
   apiKey: z.string().optional(),
 });
@@ -23,12 +22,14 @@ const AskAiTutorOutputSchema = z.object({
 });
 export type AskAiTutorOutput = z.infer<typeof AskAiTutorOutputSchema>;
 
-export async function askAiTutor(input: AskAiTutorInput): Promise<AskAiTutorOutput> {
+export async function askAiTutor(
+  input: AskAiTutorInput
+): Promise<AskAiTutorOutput> {
   return askAiTutorFlow(input);
 }
 
 const prompt = ai.definePrompt({
-  name: 'askAiTutorPrompt',
+  name: "askAiTutorPrompt",
   input: { schema: AskAiTutorInputSchema },
   output: { schema: AskAiTutorOutputSchema },
   prompt: `You are a friendly and knowledgeable AI Tutor for students in Pakistan. Your goal is to explain concepts clearly and simply.
@@ -42,7 +43,7 @@ Please provide a clear, step-by-step answer to the student's question. If possib
 
 const askAiTutorFlow = ai.defineFlow(
   {
-    name: 'askAiTutorFlow',
+    name: "askAiTutorFlow",
     inputSchema: AskAiTutorInputSchema,
     outputSchema: AskAiTutorOutputSchema,
   },

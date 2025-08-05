@@ -1,4 +1,4 @@
-'use server';
+"use server";
 /**
  * @fileOverview An AI agent for grading student answers and detecting potential cheating.
  *
@@ -7,8 +7,8 @@
  * - GradeAnswersOutput - The return type for the gradeAnswers function.
  */
 
-import { ai } from '@/ai/genkit';
-import { z } from 'genkit';
+import { ai } from "@/ai/genkit";
+import { z } from "genkit";
 
 const QuestionAnswerSchema = z.object({
   question: z.string(),
@@ -29,18 +29,26 @@ const GradedAnswerSchema = z.object({
 });
 
 const GradeAnswersOutputSchema = z.object({
-  score: z.number().describe('The final score as a percentage.'),
-  results: z.array(GradedAnswerSchema).describe('An array of graded answers with feedback.'),
-  cheatingAnalysis: z.string().describe('An analysis of the student\'s answers for any signs of cheating, such as copy-pasting from an external source, answers that are too perfect, or if they switched tabs during the exam.'),
+  score: z.number().describe("The final score as a percentage."),
+  results: z
+    .array(GradedAnswerSchema)
+    .describe("An array of graded answers with feedback."),
+  cheatingAnalysis: z
+    .string()
+    .describe(
+      "An analysis of the student's answers for any signs of cheating, such as copy-pasting from an external source, answers that are too perfect, or if they switched tabs during the exam."
+    ),
 });
 export type GradeAnswersOutput = z.infer<typeof GradeAnswersOutputSchema>;
 
-export async function gradeAnswers(input: GradeAnswersInput): Promise<GradeAnswersOutput> {
+export async function gradeAnswers(
+  input: GradeAnswersInput
+): Promise<GradeAnswersOutput> {
   return gradeAnswersFlow(input);
 }
 
 const prompt = ai.definePrompt({
-  name: 'gradeAnswersPrompt',
+  name: "gradeAnswersPrompt",
   input: { schema: GradeAnswersInputSchema },
   output: { schema: GradeAnswersOutputSchema },
   prompt: `You are an AI teacher. Your task is to grade the student's answers and also analyze for potential cheating.
@@ -64,7 +72,7 @@ Provide the grading results in the specified JSON format.`,
 
 const gradeAnswersFlow = ai.defineFlow(
   {
-    name: 'gradeAnswersFlow',
+    name: "gradeAnswersFlow",
     inputSchema: GradeAnswersInputSchema,
     outputSchema: GradeAnswersOutputSchema,
   },

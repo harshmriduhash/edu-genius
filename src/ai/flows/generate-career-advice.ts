@@ -1,5 +1,4 @@
-
-'use server';
+"use server";
 /**
  * @fileOverview Generates career advice and a roadmap for a student.
  *
@@ -8,44 +7,79 @@
  * - GenerateCareerAdviceOutput - The return type for the function.
  */
 
-import { ai } from '@/ai/genkit';
-import { z } from 'genkit';
+import { ai } from "@/ai/genkit";
+import { z } from "genkit";
 
 const GenerateCareerAdviceInputSchema = z.object({
-  interests: z.array(z.string()).describe('A list of subjects or topics the student is interested in.'),
-  strengths: z.array(z.string()).describe('A list of subjects or skills the student is good at.'),
-  currentEducation: z.string().describe('The student\'s current level of education (e.g., "Matric Commerce", "A-Levels Pre-Engineering").'),
+  interests: z
+    .array(z.string())
+    .describe("A list of subjects or topics the student is interested in."),
+  strengths: z
+    .array(z.string())
+    .describe("A list of subjects or skills the student is good at."),
+  currentEducation: z
+    .string()
+    .describe(
+      'The student\'s current level of education (e.g., "Matric Commerce", "A-Levels Pre-Engineering").'
+    ),
   apiKey: z.string().optional(),
 });
-export type GenerateCareerAdviceInput = z.infer<typeof GenerateCareerAdviceInputSchema>;
+export type GenerateCareerAdviceInput = z.infer<
+  typeof GenerateCareerAdviceInputSchema
+>;
 
 const CareerSuggestionSchema = z.object({
-  field: z.string().describe("The suggested career field (e.g., 'Data Science', 'Graphic Design')."),
-  reason: z.string().describe("A brief explanation of why this field is a good fit."),
+  field: z
+    .string()
+    .describe(
+      "The suggested career field (e.g., 'Data Science', 'Graphic Design')."
+    ),
+  reason: z
+    .string()
+    .describe("A brief explanation of why this field is a good fit."),
 });
 
 const RoadmapStepSchema = z.object({
   step: z.number(),
-  title: z.string().describe("The title of this step in the roadmap (e.g., 'Learn Python')."),
-  description: z.string().describe("A detailed description of what to do in this step."),
-  resources: z.array(z.string()).optional().describe("A list of recommended resources like courses, books, or websites."),
+  title: z
+    .string()
+    .describe("The title of this step in the roadmap (e.g., 'Learn Python')."),
+  description: z
+    .string()
+    .describe("A detailed description of what to do in this step."),
+  resources: z
+    .array(z.string())
+    .optional()
+    .describe(
+      "A list of recommended resources like courses, books, or websites."
+    ),
 });
 
 const GenerateCareerAdviceOutputSchema = z.object({
-  suggestedCareers: z.array(CareerSuggestionSchema).describe("A list of 3-5 career suggestions."),
-  topCareerRoadmap: z.object({
-    career: z.string().describe("The top recommended career path."),
-    roadmap: z.array(RoadmapStepSchema).describe("A detailed step-by-step plan to achieve this career."),
-  }).describe("A detailed roadmap for the most suitable career path."),
+  suggestedCareers: z
+    .array(CareerSuggestionSchema)
+    .describe("A list of 3-5 career suggestions."),
+  topCareerRoadmap: z
+    .object({
+      career: z.string().describe("The top recommended career path."),
+      roadmap: z
+        .array(RoadmapStepSchema)
+        .describe("A detailed step-by-step plan to achieve this career."),
+    })
+    .describe("A detailed roadmap for the most suitable career path."),
 });
-export type GenerateCareerAdviceOutput = z.infer<typeof GenerateCareerAdviceOutputSchema>;
+export type GenerateCareerAdviceOutput = z.infer<
+  typeof GenerateCareerAdviceOutputSchema
+>;
 
-export async function generateCareerAdvice(input: GenerateCareerAdviceInput): Promise<GenerateCareerAdviceOutput> {
+export async function generateCareerAdvice(
+  input: GenerateCareerAdviceInput
+): Promise<GenerateCareerAdviceOutput> {
   return generateCareerAdviceFlow(input);
 }
 
 const prompt = ai.definePrompt({
-  name: 'generateCareerAdvicePrompt',
+  name: "generateCareerAdvicePrompt",
   input: { schema: GenerateCareerAdviceInputSchema },
   output: { schema: GenerateCareerAdviceOutputSchema },
   prompt: `You are an expert career counselor for Pakistani students. Your task is to provide personalized career advice and a clear, actionable roadmap.
@@ -64,7 +98,7 @@ Output the entire response in the specified JSON format.`,
 
 const generateCareerAdviceFlow = ai.defineFlow(
   {
-    name: 'generateCareerAdviceFlow',
+    name: "generateCareerAdviceFlow",
     inputSchema: GenerateCareerAdviceInputSchema,
     outputSchema: GenerateCareerAdviceOutputSchema,
   },
